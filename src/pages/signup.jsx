@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import PasswordInput from '@/components/password-input'
@@ -22,6 +25,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { api } from '@/lib/axios'
 
 // regras para validação de campos do formulário com zod
 const signupSchema = z.object({
@@ -46,6 +50,22 @@ const signupSchema = z.object({
 })
 
 const SignupPage = () => {
+  const [user, setUser] = useState(null)
+
+  // mutation do react query
+  const signupMutation = useMutation({
+    mutationKey: ['signup'],
+    mutationFn: async (variables) => {
+      const response = await api.post('/users', {
+        first_name: variables.firstName,
+        last_name: variables.lastName,
+        email: variables.email,
+        password: variables.password,
+      })
+      return response.data
+    },
+  })
+
   // validação do zod para o React Hook Form
   const form = useForm({
     resolver: zodResolver(signupSchema),
@@ -59,7 +79,24 @@ const SignupPage = () => {
     },
   })
   const handleSubmit = (data) => {
-    console.log(data)
+    signupMutation.mutate(data, {
+      onSuccess: (createdUser) => {
+        // armazena os tokens do usuário criado no local storage
+        const accessToken = createdUser.tokens.accessToken
+        const refreshToken = createdUser.tokens.refreshToken
+        setUser(createdUser)
+        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('refreshToken', refreshToken)
+
+        toast.success('Conta criada com sucesso')
+      },
+      onError: () => {
+        toast.error('Erro ao criar conta! Por favor, tente novamente')
+      },
+    })
+  }
+  if (user) {
+    return <h1>Olá, {user.first_name} </h1>
   }
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-3">
@@ -170,7 +207,7 @@ const SignupPage = () => {
                         Ao clicar em &quot;Criar conta&quot;, você aceita{' '}
                         <a
                           href="#"
-                          className={`text-white underline ${form.formState.errors.terms && 'text-red-500'}`}
+                          className={`underline ${form.formState.errors.terms && 'text-red-500'}`}
                         >
                           nosso termo de uso e política de privacidade
                         </a>
