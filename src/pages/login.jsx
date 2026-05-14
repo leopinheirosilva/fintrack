@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router'
 import { z } from 'zod'
@@ -22,7 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AuthContext } from '@/contexts/auth'
+import { useAuthContext } from '@/contexts/auth'
 
 // regras para validação de campos do formulário com zod
 const loginSchema = z.object({
@@ -35,7 +34,7 @@ const loginSchema = z.object({
 })
 
 const LoginPage = () => {
-  const { user, login } = useContext(AuthContext)
+  const { user, login } = useAuthContext()
 
   // validação do zod para o React Hook Form
   const form = useForm({
