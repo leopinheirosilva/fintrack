@@ -45,6 +45,35 @@ export const AuthContextProvider = ({ children }) => {
     })
   }
 
+  // mutation da login page
+  const loginMutation = useMutation({
+    mutationKey: ['login'],
+    mutationFn: async (variables) => {
+      const response = await api.post('/users/login', {
+        email: variables.email,
+        password: variables.password,
+      })
+      return response.data
+    },
+  })
+  const login = (data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (loggedUser) => {
+        // armazena os tokes do usuário logado no local storage
+        const accessToken = loggedUser.tokens.accessToken
+        const refreshToken = loggedUser.tokens.refreshToken
+        setUser(loggedUser)
+        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('refreshToken', refreshToken)
+
+        toast.success('Usuário logado com sucesso')
+      },
+      onError: () => {
+        toast.error('Usuário inválido! Por favor, tente novamente')
+      },
+    })
+  }
+
   // persiste o usuário
   useEffect(() => {
     const init = async () => {
@@ -72,9 +101,9 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user: user,
-        login: () => {},
-        signup: signup,
+        user,
+        login,
+        signup,
       }}
     >
       {children}
