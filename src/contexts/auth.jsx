@@ -2,6 +2,10 @@ import { useMutation } from '@tanstack/react-query'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
+import {
+  LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+} from '@/constants/local-storage'
 import { api } from '@/lib/axios'
 
 // criação do contexto
@@ -15,10 +19,6 @@ export const AuthContext = createContext({
 
 // hook personalizado para importar o contexto
 export const useAuthContext = () => useContext(AuthContext)
-
-// define variáveis para as keys
-const LOCAL_STORAGE_ACCESS_TOKEN_KEY = 'accessToken'
-const LOCAL_STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
 
 // armazena os tokens do usuário criado no local storage
 const setTokens = (tokens) => {
@@ -102,11 +102,7 @@ export const AuthContextProvider = ({ children }) => {
           LOCAL_STORAGE_REFRESH_TOKEN_KEY
         )
         if (!accessToken && !refreshToken) return
-        const response = await api.get('/users/me', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        const response = await api.get('/users/me')
         setUser(response.data)
       } catch (error) {
         // remove os tokes armazenados no local storage e o state de usuário caso os tokes sejam inválidos
