@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router'
+import { Link, Navigate } from 'react-router'
 import { z } from 'zod'
 
 import PasswordInput from '@/components/password-input'
@@ -53,7 +53,7 @@ const signupSchema = z
   })
 
 const SignupPage = () => {
-  const { user, signup } = useAuthContext()
+  const { user, signup, isInitializing } = useAuthContext()
 
   // validação do zod para o React Hook Form
   const form = useForm({
@@ -71,8 +71,10 @@ const SignupPage = () => {
   // chama o signup do AuthContext
   const handleSubmit = (data) => signup(data)
 
+  if (isInitializing) return null
+
   if (user) {
-    return <h1>Olá, {user.first_name} </h1>
+    return <Navigate to="/" />
   }
 
   return (

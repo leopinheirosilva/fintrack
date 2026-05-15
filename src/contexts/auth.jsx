@@ -7,16 +7,17 @@ import { api } from '@/lib/axios'
 // criação do contexto
 export const AuthContext = createContext({
   user: null,
+  isInitializing: true,
   login: () => {},
   signup: () => {},
 })
 
+// hook personalizado para importar o contexto
+export const useAuthContext = () => useContext(AuthContext)
+
 // define variáveis para as keys
 const LOCAL_STORAGE_ACCESS_TOKEN_KEY = 'accessToken'
 const LOCAL_STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
-
-// hook personalizado para importar o contexto
-export const useAuthContext = () => useContext(AuthContext)
 
 // armazena os tokens do usuário criado no local storage
 const setTokens = (tokens) => {
@@ -31,6 +32,7 @@ const removeTokens = () => {
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState()
+  const [isInitializing, setIsInitializing] = useState(true)
 
   // mutation da signup page
   const signupMutation = useMutation({
@@ -87,6 +89,7 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       try {
+        setIsInitializing(true)
         // pega os tokens do usuário armazenados no local storage
         const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
         const refreshToken = localStorage.getItem(
@@ -100,9 +103,12 @@ export const AuthContextProvider = ({ children }) => {
         })
         setUser(response.data)
       } catch (error) {
-        // remove os tokes armazenados no local storage caso os tokes sejam inválidos
+        // remove os tokes armazenados no local storage e o state de usuário caso os tokes sejam inválidos
+        setUser(null)
         removeTokens()
         console.log(error)
+      } finally {
+        setIsInitializing(false)
       }
     }
     init()
@@ -114,6 +120,7 @@ export const AuthContextProvider = ({ children }) => {
         user,
         login,
         signup,
+        isInitializing,
       }}
     >
       {children}
