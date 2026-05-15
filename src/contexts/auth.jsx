@@ -10,6 +10,7 @@ export const AuthContext = createContext({
   isInitializing: true,
   login: () => {},
   signup: () => {},
+  signout: () => {},
 })
 
 // hook personalizado para importar o contexto
@@ -85,6 +86,11 @@ export const AuthContextProvider = ({ children }) => {
     })
   }
 
+  const signout = () => {
+    setUser(null)
+    removeTokens()
+  }
+
   // persiste o usuário
   useEffect(() => {
     const init = async () => {
@@ -120,6 +126,7 @@ export const AuthContextProvider = ({ children }) => {
         user,
         login,
         signup,
+        signout,
         isInitializing,
       }}
     >
