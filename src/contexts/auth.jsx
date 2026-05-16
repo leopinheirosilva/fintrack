@@ -105,9 +105,8 @@ export const AuthContextProvider = ({ children }) => {
         const response = await protectedApi.get('/users/me')
         setUser(response.data)
       } catch (error) {
-        // remove os tokes armazenados no local storage e o state de usuário caso os tokes sejam inválidos
+        // remove o state de usuário caso os tokens sejam inválidos
         setUser(null)
-        removeTokens()
         console.log(error)
       } finally {
         setIsInitializing(false)
