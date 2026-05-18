@@ -30,7 +30,6 @@ const DateSelection = () => {
     navigate(`/?${queryParams.toString()}`)
   }, [navigate, date])
 
-  // aramazena o valor da URL no state "date" quando a página é recarregada
   return <DatePickerWithRange value={date} onChange={setDate} />
 }
 
