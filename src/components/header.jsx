@@ -16,7 +16,7 @@ import {
 } from './ui/dropdown-menu'
 
 const Header = () => {
-  const { user, signout } = useAuthContext()
+  const { user, logout } = useAuthContext()
 
   return (
     <div>
@@ -50,7 +50,7 @@ const Header = () => {
                     variant="ghost"
                     size="small"
                     className="w-full justify-start"
-                    onClick={signout}
+                    onClick={logout}
                   >
                     <LogOutIcon />
                     Sair

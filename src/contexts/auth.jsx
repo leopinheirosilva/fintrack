@@ -14,18 +14,17 @@ export const AuthContext = createContext({
   isInitializing: true,
   login: () => {},
   signup: () => {},
-  signout: () => {},
+  logout: () => {},
 })
 
 // hook personalizado para importar o contexto
 export const useAuthContext = () => useContext(AuthContext)
 
-// armazena os tokens do usuário criado no local storage
+// armazena e remove os tokens do usuário criado no local storage
 const setTokens = (tokens) => {
   localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, tokens.accessToken)
   localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, tokens.refreshToken)
 }
-
 const removeTokens = () => {
   localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
   localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY)
@@ -78,7 +77,8 @@ export const AuthContextProvider = ({ children }) => {
     })
   }
 
-  const signout = () => {
+  // faz logout
+  const logout = () => {
     setUser(null)
     removeTokens()
   }
@@ -113,7 +113,7 @@ export const AuthContextProvider = ({ children }) => {
         user,
         login,
         signup,
-        signout,
+        logout,
         isInitializing,
       }}
     >
