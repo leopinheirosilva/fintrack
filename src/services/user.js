@@ -64,6 +64,7 @@ export const UserService = {
       lastName: response.data.last_name,
     }
   },
+  // JS Docs
   /**
    * Retorna o balanço do usuário autenticado
    * @param {Object} input - Usuário autenticado
