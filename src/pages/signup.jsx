@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate } from 'react-router'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import PasswordInput from '@/components/password-input'
@@ -70,6 +71,13 @@ const SignupPage = () => {
 
   // chama o signup do AuthContext
   const handleSubmit = (data) => signup(data)
+
+  const checkboxIsTrue = () => {
+    if (form.formState.errors.terms) {
+      return toast.error('Aceite os termos e condições para criar conta')
+    }
+    handleSubmit()
+  }
 
   if (isInitializing) return null
 
@@ -173,21 +181,15 @@ const SignupPage = () => {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className={
-                          form.formState.errors.terms && 'border-red-500'
-                        }
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <label
                         htmlFor="terms"
-                        className={`text-xs font-medium leading-none text-muted-foreground opacity-75 ${form.formState.errors.terms && 'text-red-500'}`}
+                        className="text-xs font-medium leading-none text-muted-foreground opacity-75"
                       >
-                        Ao clicar em &quot;Criar conta&quot;, você aceita{' '}
-                        <a
-                          href="#"
-                          className={`underline ${form.formState.errors.terms && 'text-red-500'}`}
-                        >
+                        Ao clicar em &quot;Criar conta&quot;, você aceita
+                        <a href="#" className="text-white underline">
                           nosso termo de uso e política de privacidade
                         </a>
                       </label>
@@ -198,7 +200,9 @@ const SignupPage = () => {
             </CardContent>
             <CardFooter>
               {/* Criar conta */}
-              <Button className="w-full">Criar conta</Button>
+              <Button className="w-full" onClick={checkboxIsTrue}>
+                Criar conta
+              </Button>
             </CardFooter>
           </Card>
         </form>
