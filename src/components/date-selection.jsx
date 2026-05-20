@@ -26,8 +26,8 @@ const getInitialDateState = (searchParams) => {
   }
   // se o "from" e o "to" forem válidos, retorna a data selecionada
   return {
-    from: new Date(searchParams.get('from') + 'T00:00:00'),
-    to: new Date(searchParams.get('to') + 'T00:00:00'),
+    from: new Date(from + 'T00:00:00'),
+    to: new Date(to + 'T00:00:00'),
   }
 }
 
