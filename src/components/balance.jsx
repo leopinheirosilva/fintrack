@@ -22,6 +22,7 @@ const Balance = () => {
     queryFn: () => {
       return UserService.getBalance({ from, to })
     },
+    enabled: Boolean(from) && Boolean(to) && Boolean(user.id),
   })
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-6">
