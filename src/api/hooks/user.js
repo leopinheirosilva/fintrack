@@ -12,7 +12,7 @@ export const getUserBalanceQueryKey = ({ userId, from, to }) => {
 }
 // hook
 export const useGetUserBalance = ({ from, to }) => {
-  const { user } = useAuthContext
+  const { user } = useAuthContext()
   return useQuery({
     queryKey: getUserBalanceQueryKey({ userId: user.id, from, to }),
     queryFn: () => {
