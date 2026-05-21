@@ -1,4 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Loader2Icon,
   PiggyBank,
@@ -7,12 +6,9 @@ import {
   TrendingUpIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
 import { toast } from 'sonner'
-import z from 'zod'
 
-import { useCreateTransaction } from '@/api/hooks/transaction'
 import {
   Dialog,
   DialogClose,
@@ -23,55 +19,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { useCreateTransactionForm } from '@/forms/hooks/transaction'
 
 import { Button } from './ui/button'
 import { DatePicker } from './ui/date-picker'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import { Input } from './ui/input'
 
-// regras para validaçõo de campos do formulário com zod
-const transactionSchema = z.object({
-  name: z.string().trim().min(1, {
-    message: 'O nome é obrigatório',
-  }),
-  amount: z.number({
-    required_error: 'O valor é obrigatório',
-  }),
-  date: z.date({
-    required_error: 'Selecione uma data',
-  }),
-  type: z.enum(['EARNING', 'EXPENSE', 'INVESTMENT'], {
-    message: 'Selecione o tipo da transação',
-  }),
-})
-
 const AddTransactionButton = () => {
-  const { mutateAsync: createTransaction, isPending } = useCreateTransaction()
-
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
-  // validação do zod para o React Hook Form
-  const form = useForm({
-    resolver: zodResolver(transactionSchema),
-    defaultValues: {
-      name: '',
-      amount: 0,
-      date: new Date(),
-      type: 'EARNING',
-    },
-    shouldUnregister: true,
-  })
-
-  const handleSubmit = async (data) => {
-    try {
-      await createTransaction(data)
+  const { form, handleSubmit } = useCreateTransactionForm({
+    onSuccess: () => {
       setDialogIsOpen(false)
       toast.success('Transação criada com sucesso!')
-    } catch (error) {
-      console.error(error)
+    },
+    onError: () => {
       toast.error('Erro ao criar transação!')
-    }
-  }
+    },
+  })
 
   return (
     <div>
@@ -100,7 +66,7 @@ const AddTransactionButton = () => {
                     <label>Nome</label>
                     <FormControl>
                       <Input
-                        disabled={isPending}
+                        disabled={form.formState.isSubmitting}
                         placeholder="Digite o nome da transação"
                         {...field}
                       />
@@ -118,7 +84,7 @@ const AddTransactionButton = () => {
                     <label>Valor</label>
                     <FormControl>
                       <NumericFormat
-                        disabled={isPending}
+                        disabled={form.formState.isSubmitting}
                         placeholder="Digite o valor da transação"
                         thousandSeparator="."
                         decimalSeparator=","
@@ -145,7 +111,7 @@ const AddTransactionButton = () => {
                     <label>Data</label>
                     <FormControl>
                       <DatePicker
-                        disabled={isPending}
+                        disabled={form.formState.isSubmitting}
                         placeholder="Selectione a data da transação"
                         {...field}
                       />
@@ -165,7 +131,7 @@ const AddTransactionButton = () => {
                         {/* Ganho */}
                         <Button
                           type="button"
-                          disabled={isPending}
+                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'EARNING' ? 'secondary' : 'outline'
                           }
@@ -177,7 +143,7 @@ const AddTransactionButton = () => {
                         {/* Gasto */}
                         <Button
                           type="button"
-                          disabled={isPending}
+                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'EXPENSE' ? 'secondary' : 'outline'
                           }
@@ -189,7 +155,7 @@ const AddTransactionButton = () => {
                         {/* Investimento */}
                         <Button
                           type="button"
-                          disabled={isPending}
+                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'INVESTMENT'
                               ? 'secondary'
@@ -213,7 +179,7 @@ const AddTransactionButton = () => {
                     type="reset"
                     variant="secondary"
                     className="w-full"
-                    disabled={isPending}
+                    disabled={form.formState.isSubmitting}
                   >
                     Cancelar
                   </Button>
