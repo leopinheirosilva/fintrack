@@ -1,7 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  LoaderIcon,
   PiggyBank,
   PlusIcon,
   TrendingDownIcon,
@@ -13,8 +11,7 @@ import { NumericFormat } from 'react-number-format'
 import { toast } from 'sonner'
 import z from 'zod'
 
-import { getUserBalanceQueryKey } from '@/api/hooks/user'
-import { TransactionService } from '@/api/services/transaction'
+import { useCreateTransaction } from '@/api/hooks/transaction'
 import {
   Dialog,
   DialogClose,
@@ -25,7 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useAuthContext } from '@/contexts/auth'
 
 import { Button } from './ui/button'
 import { DatePicker } from './ui/date-picker'
@@ -49,17 +45,7 @@ const transactionSchema = z.object({
 })
 
 const AddTransactionButton = () => {
-  const { user } = useAuthContext()
-  const queryClient = useQueryClient()
-  const { mutateAsync: craeteTransaction } = useMutation({
-    mutationKey: ['createTransaction'],
-    mutationFn: (input) => TransactionService.create(input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: getUserBalanceQueryKey({ userId: user.id }),
-      })
-    },
-  })
+  const { mutateAsync: craeteTransaction } = useCreateTransaction()
 
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
@@ -113,7 +99,6 @@ const AddTransactionButton = () => {
                     <FormControl>
                       <Input
                         placeholder="Digite o nome da transação"
-                        disabled={form.formState.isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -131,7 +116,6 @@ const AddTransactionButton = () => {
                     <FormControl>
                       <NumericFormat
                         placeholder="Digite o valor da transação"
-                        disabled={form.formState.isSubmitting}
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="R$"
@@ -158,7 +142,6 @@ const AddTransactionButton = () => {
                     <FormControl>
                       <DatePicker
                         placeholder="Selectione a data da transação"
-                        disabled={form.formState.isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -177,7 +160,6 @@ const AddTransactionButton = () => {
                         {/* Ganho */}
                         <Button
                           type="button"
-                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'EARNING' ? 'secondary' : 'outline'
                           }
@@ -189,7 +171,6 @@ const AddTransactionButton = () => {
                         {/* Gasto */}
                         <Button
                           type="button"
-                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'EXPENSE' ? 'secondary' : 'outline'
                           }
@@ -201,7 +182,6 @@ const AddTransactionButton = () => {
                         {/* Investimento */}
                         <Button
                           type="button"
-                          disabled={form.formState.isSubmitting}
                           variant={
                             field.value == 'INVESTMENT'
                               ? 'secondary'
@@ -221,12 +201,7 @@ const AddTransactionButton = () => {
               {/* Botões de adicionar e cancelar */}
               <DialogFooter className="sm:space-x-4">
                 <DialogClose asChild>
-                  <Button
-                    type="reset"
-                    variant="secondary"
-                    className="w-full"
-                    disabled={form.formState.isSubmitting}
-                  >
+                  <Button type="reset" variant="secondary" className="w-full">
                     Cancelar
                   </Button>
                 </DialogClose>
@@ -235,9 +210,6 @@ const AddTransactionButton = () => {
                   className="w-full"
                   disabled={form.formState.isSubmitting}
                 >
-                  {form.formState.isSubmitting && (
-                    <LoaderIcon className="animate-spin" />
-                  )}
                   Adicionar
                 </Button>
               </DialogFooter>
