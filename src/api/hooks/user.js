@@ -8,12 +8,11 @@ export const getUserBalanceQueryKey = ({ userId, from, to }) => {
   if (!from || !to) {
     return ['balance', userId]
   }
-  ;['balance', userId, from, to]
+  return ['balance', userId, from, to]
 }
 // hook
 export const useGetUserBalance = ({ from, to }) => {
   const { user } = useAuthContext
-
   return useQuery({
     queryKey: getUserBalanceQueryKey({ userId: user.id, from, to }),
     queryFn: () => {
