@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { useAuthContext } from '@/contexts/auth'
+
 import { TransactionService } from '../services/transaction'
-import { UserService } from '../services/user'
 import { getUserBalanceQueryKey } from './user'
 
 // define a mutationKey do hook useCreateTransaction
@@ -11,7 +12,7 @@ export const createTransactionMutationKey = () => {
 // hook
 export const useCreateTransaction = () => {
   const queryClient = useQueryClient()
-  const { user } = UserService()
+  const { user } = useAuthContext()
   return useMutation({
     mutationKey: createTransactionMutationKey,
     mutationFn: (input) => TransactionService.create(input),
