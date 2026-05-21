@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
+  Loader2Icon,
   PiggyBank,
   PlusIcon,
   TrendingDownIcon,
@@ -45,7 +46,7 @@ const transactionSchema = z.object({
 })
 
 const AddTransactionButton = () => {
-  const { mutateAsync: craeteTransaction } = useCreateTransaction()
+  const { mutateAsync: createTransaction, isPending } = useCreateTransaction()
 
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
@@ -63,11 +64,12 @@ const AddTransactionButton = () => {
 
   const handleSubmit = async (data) => {
     try {
-      await craeteTransaction(data)
+      await createTransaction(data)
       setDialogIsOpen(false)
       toast.success('Transação criada com sucesso!')
     } catch (error) {
       console.error(error)
+      toast.error('Erro ao criar transação!')
     }
   }
 
@@ -98,6 +100,7 @@ const AddTransactionButton = () => {
                     <label>Nome</label>
                     <FormControl>
                       <Input
+                        disabled={isPending}
                         placeholder="Digite o nome da transação"
                         {...field}
                       />
@@ -115,6 +118,7 @@ const AddTransactionButton = () => {
                     <label>Valor</label>
                     <FormControl>
                       <NumericFormat
+                        disabled={isPending}
                         placeholder="Digite o valor da transação"
                         thousandSeparator="."
                         decimalSeparator=","
@@ -141,6 +145,7 @@ const AddTransactionButton = () => {
                     <label>Data</label>
                     <FormControl>
                       <DatePicker
+                        disabled={isPending}
                         placeholder="Selectione a data da transação"
                         {...field}
                       />
@@ -160,6 +165,7 @@ const AddTransactionButton = () => {
                         {/* Ganho */}
                         <Button
                           type="button"
+                          disabled={isPending}
                           variant={
                             field.value == 'EARNING' ? 'secondary' : 'outline'
                           }
@@ -171,6 +177,7 @@ const AddTransactionButton = () => {
                         {/* Gasto */}
                         <Button
                           type="button"
+                          disabled={isPending}
                           variant={
                             field.value == 'EXPENSE' ? 'secondary' : 'outline'
                           }
@@ -182,6 +189,7 @@ const AddTransactionButton = () => {
                         {/* Investimento */}
                         <Button
                           type="button"
+                          disabled={isPending}
                           variant={
                             field.value == 'INVESTMENT'
                               ? 'secondary'
@@ -201,7 +209,12 @@ const AddTransactionButton = () => {
               {/* Botões de adicionar e cancelar */}
               <DialogFooter className="sm:space-x-4">
                 <DialogClose asChild>
-                  <Button type="reset" variant="secondary" className="w-full">
+                  <Button
+                    type="reset"
+                    variant="secondary"
+                    className="w-full"
+                    disabled={isPending}
+                  >
                     Cancelar
                   </Button>
                 </DialogClose>
@@ -210,6 +223,9 @@ const AddTransactionButton = () => {
                   className="w-full"
                   disabled={form.formState.isSubmitting}
                 >
+                  {form.formState.isSubmitting && (
+                    <Loader2Icon className="animate-spin" />
+                  )}
                   Adicionar
                 </Button>
               </DialogFooter>
