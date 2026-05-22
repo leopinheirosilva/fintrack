@@ -1,7 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Loader2Icon } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
-import { z } from 'zod'
 
 import PasswordInput from '@/components/password-input'
 import { Button } from '@/components/ui/button'
@@ -22,31 +20,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuthContext } from '@/contexts/auth'
-
-// regras para validação de campos do formulário com zod
-const loginSchema = z.object({
-  email: z.string().email({
-    message: 'O e-mail é inválido',
-  }),
-  password: z.string().trim().min(6, {
-    message: 'A senha deve ter no mínimo 6 caracteres',
-  }),
-})
+import { useLoginForm } from '@/forms/hooks/user'
 
 const LoginPage = () => {
-  const { user, login, isInitializing } = useAuthContext()
-
-  // validação do zod para o React Hook Form
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  })
-
-  // chama o login do AuthContext
-  const handleSubmit = (data) => login(data)
+  const { user, isInitializing } = useAuthContext()
+  const { form, handleSubmit } = useLoginForm()
 
   if (isInitializing) return null
 
@@ -72,7 +50,11 @@ const LoginPage = () => {
                   <FormItem>
                     <label>Email</label>
                     <FormControl>
-                      <Input placeholder="Digite seu e-mail" {...field} />
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        placeholder="Digite seu e-mail"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,6 +69,7 @@ const LoginPage = () => {
                     <label>Senha</label>
                     <FormControl>
                       <PasswordInput
+                        disabled={form.formState.isSubmitting}
                         placeholder="Digite sua senha"
                         {...field}
                       />
@@ -98,7 +81,12 @@ const LoginPage = () => {
             </CardContent>
             <CardFooter>
               {/* Fazer login */}
-              <Button className="w-full">Fazer login</Button>
+              <Button className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && (
+                  <Loader2Icon className="animate-spin" />
+                )}
+                Fazer login
+              </Button>
             </CardFooter>
           </Card>
         </form>

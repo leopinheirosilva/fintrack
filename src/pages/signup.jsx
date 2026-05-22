@@ -1,8 +1,6 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Loader2Icon } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 import PasswordInput from '@/components/password-input'
 import { Button } from '@/components/ui/button'
@@ -24,53 +22,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuthContext } from '@/contexts/auth'
-
-// regras para validação de campos do formulário com zod
-const signupSchema = z
-  .object({
-    firstName: z.string().trim().min(1, {
-      message: 'O nome é obrigatório',
-    }),
-    lastName: z.string().trim().min(1, {
-      message: 'O sobrenome é obrigatório',
-    }),
-    email: z.string().email({
-      message: 'O e-mail é inválido',
-    }),
-    password: z.string().trim().min(6, {
-      message: 'A senha deve ter no mínimo 6 caracteres',
-    }),
-    passwordConfirmation: z.string().trim().min(6, {
-      message: 'A confirmação de senha é obrigatória',
-    }),
-    terms: z.boolean().refine((value) => value == true, {
-      message: 'Campo obrigatório',
-    }),
-  })
-  // lógica para confirmação de senha
-  .refine((data) => data.password == data.passwordConfirmation, {
-    message: 'As senhas não coincidem',
-    path: ['passwordConfirmation'],
-  })
+import { useSignupForm } from '@/forms/hooks/user'
 
 const SignupPage = () => {
-  const { user, signup, isInitializing } = useAuthContext()
-
-  // validação do zod para o React Hook Form
-  const form = useForm({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      passwordConfirmation: '',
-      terms: false,
-    },
-  })
-
-  // chama o signup do AuthContext
-  const handleSubmit = (data) => signup(data)
+  const { user, isInitializing } = useAuthContext()
+  const { form, handleSubmit } = useSignupForm()
 
   const checkboxIsTrue = () => {
     if (form.formState.errors.terms) {
@@ -103,7 +59,11 @@ const SignupPage = () => {
                   <FormItem>
                     <label>Nome</label>
                     <FormControl>
-                      <Input placeholder="Digite o seu nome" {...field} />
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        placeholder="Digite o seu nome"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -117,7 +77,11 @@ const SignupPage = () => {
                   <FormItem>
                     <label>Sobrenome</label>
                     <FormControl>
-                      <Input placeholder="Digite o seu sobrenome" {...field} />
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        placeholder="Digite o seu sobrenome"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -131,7 +95,11 @@ const SignupPage = () => {
                   <FormItem>
                     <label>Email</label>
                     <FormControl>
-                      <Input placeholder="Digite um e-mail válido" {...field} />
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        placeholder="Digite um e-mail válido"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,6 +114,7 @@ const SignupPage = () => {
                     <label>Senha</label>
                     <FormControl>
                       <PasswordInput
+                        disabled={form.formState.isSubmitting}
                         placeholder="Digite sua senha"
                         {...field}
                       />
@@ -163,6 +132,7 @@ const SignupPage = () => {
                     <label>Confirmação de Senha</label>
                     <FormControl>
                       <PasswordInput
+                        disabled={form.formState.isSubmitting}
                         placeholder="Digite sua senha novamente"
                         {...field}
                       />
@@ -179,6 +149,7 @@ const SignupPage = () => {
                   <FormItem className="items-top flex space-x-2 space-y-0 pt-3">
                     <FormControl>
                       <Checkbox
+                        disabled={form.formState.isSubmitting}
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -189,7 +160,7 @@ const SignupPage = () => {
                         className="text-xs font-medium leading-none text-muted-foreground opacity-75"
                       >
                         Ao clicar em &quot;Criar conta&quot;, você aceita
-                        <a href="#" className="text-white underline">
+                        <a href="#" className="ml-1 text-white underline">
                           nosso termo de uso e política de privacidade
                         </a>
                       </label>
@@ -200,7 +171,14 @@ const SignupPage = () => {
             </CardContent>
             <CardFooter>
               {/* Criar conta */}
-              <Button className="w-full" onClick={checkboxIsTrue}>
+              <Button
+                className="w-full"
+                onClick={checkboxIsTrue}
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && (
+                  <Loader2Icon className="animate-spin" />
+                )}
                 Criar conta
               </Button>
             </CardFooter>

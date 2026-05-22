@@ -20,11 +20,12 @@ export const AuthContext = createContext({
 // hook personalizado para importar o contexto
 export const useAuthContext = () => useContext(AuthContext)
 
-// armazena e remove os tokens do usuário criado no local storage
+// armazena os tokens do usuário criado no local storage
 const setTokens = (tokens) => {
   localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, tokens.accessToken)
   localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, tokens.refreshToken)
 }
+// remove os tokens do usuário do local storage
 const removeTokens = () => {
   localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
   localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY)
@@ -36,33 +37,30 @@ export const AuthContextProvider = ({ children }) => {
 
   // signup mutation
   const signupMutation = useSignup()
-  const signup = (data) => {
-    signupMutation.mutate(data, {
-      onSuccess: (createdUser) => {
-        setUser(createdUser)
-        setTokens(createdUser.tokens)
-        toast.success('Conta criada com sucesso')
-      },
-      onError: () => {
-        toast.error('Erro ao criar conta! Por favor, tente novamente')
-      },
-    })
+  const signup = async (data) => {
+    try {
+      const createdUser = await signupMutation.mutateAsync(data)
+      setUser(createdUser)
+      setTokens(createdUser.tokens)
+      toast.success('Conta criada com sucesso')
+    } catch (error) {
+      console.error(error)
+      toast.error('Erro ao criar conta! Por favor, tente novamente')
+    }
   }
 
   // login mutation
   const loginMutation = useLogin()
-  const login = (data) => {
-    loginMutation.mutate(data, {
-      onSuccess: (loggedUser) => {
-        setUser(loggedUser)
-        setTokens(loggedUser.tokens)
-
-        toast.success('Usuário logado com sucesso')
-      },
-      onError: () => {
-        toast.error('Usuário inválido! Por favor, tente novamente')
-      },
-    })
+  const login = async (data) => {
+    try {
+      const loggedUser = await loginMutation.mutateAsync(data)
+      setUser(loggedUser)
+      setTokens(loggedUser.tokens)
+      toast.success('Usuário logado com sucesso')
+    } catch (error) {
+      console.error(error)
+      toast.error('Usuário inválido! Por favor, tente novamente')
+    }
   }
 
   // faz logout
@@ -86,8 +84,8 @@ export const AuthContextProvider = ({ children }) => {
         setUser(response)
       } catch (error) {
         // remove o state de usuário caso os tokens sejam inválidos
+        console.error(error)
         setUser(null)
-        console.log(error)
       } finally {
         setIsInitializing(false)
       }
