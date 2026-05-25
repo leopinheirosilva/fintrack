@@ -1,7 +1,11 @@
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale/pt-BR'
 import { useSearchParams } from 'react-router'
 
 import { useGetTransactions } from '@/api/hooks/transaction'
+import { formatCurrency } from '@/helpers/currency'
 
+import TransactionTypeBadge from './transaction-type-badge'
 import { DataTable } from './ui/data-table'
 
 const columns = [
@@ -12,14 +16,27 @@ const columns = [
   {
     accessorKey: 'type',
     header: 'Tipo',
+    cell: ({ row: { original: transaction } }) => {
+      return <TransactionTypeBadge variant={transaction.type} />
+    },
   },
   {
     accessorKey: 'date',
     header: 'Data',
+    // formata a data usando o date-fns
+    cell: ({ row: { original: transaction } }) => {
+      return format(new Date(transaction.date), "dd 'de' MMMM 'de' yyyy", {
+        locale: ptBR,
+      })
+    },
   },
   {
     accessorKey: 'amount',
     header: 'Valor',
+    // formata o valor em reais
+    cell: ({ row: { original: transaction } }) => {
+      return formatCurrency(transaction.amount)
+    },
   },
   {
     accessorKey: 'actions',
