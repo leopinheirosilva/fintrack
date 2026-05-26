@@ -15,3 +15,8 @@ export const createTransactionFormSchema = z.object({
     message: 'Selecione o tipo da transação',
   }),
 })
+
+// regras para validaçõo de campos do formulário com zod
+export const editTransactionFormSchema = createTransactionFormSchema.extend({
+  id: z.string().uuid(),
+})
