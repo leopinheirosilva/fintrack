@@ -1,10 +1,4 @@
-import {
-  Loader2Icon,
-  PiggyBank,
-  PlusIcon,
-  TrendingDownIcon,
-  TrendingUpIcon,
-} from 'lucide-react'
+import { Loader2Icon, PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { NumericFormat } from 'react-number-format'
 import { toast } from 'sonner'
@@ -21,6 +15,7 @@ import {
 } from '@/components/ui/dialog'
 import { useCreateTransactionForm } from '@/forms/hooks/transaction'
 
+import TransactionTypeSelect from './transaction-type-select'
 import { Button } from './ui/button'
 import { DatePicker } from './ui/date-picker'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
@@ -127,46 +122,11 @@ const AddTransactionButton = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div className="grid grid-cols-3 gap-4">
-                        {/* Ganho */}
-                        <Button
-                          type="button"
-                          disabled={form.formState.isSubmitting}
-                          variant={
-                            field.value == 'EARNING' ? 'secondary' : 'outline'
-                          }
-                          onClick={() => field.onChange('EARNING')}
-                        >
-                          <TrendingUpIcon className="text-primary-green" />
-                          Ganho
-                        </Button>
-                        {/* Gasto */}
-                        <Button
-                          type="button"
-                          disabled={form.formState.isSubmitting}
-                          variant={
-                            field.value == 'EXPENSE' ? 'secondary' : 'outline'
-                          }
-                          onClick={() => field.onChange('EXPENSE')}
-                        >
-                          <TrendingDownIcon className="text-primary-red" />
-                          Gasto
-                        </Button>
-                        {/* Investimento */}
-                        <Button
-                          type="button"
-                          disabled={form.formState.isSubmitting}
-                          variant={
-                            field.value == 'INVESTMENT'
-                              ? 'secondary'
-                              : 'outline'
-                          }
-                          onClick={() => field.onChange('INVESTMENT')}
-                        >
-                          <PiggyBank className="text-primary-blue" />
-                          Investimento
-                        </Button>
-                      </div>
+                      <TransactionTypeSelect
+                        disabled={form.formState.isSubmitting}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
