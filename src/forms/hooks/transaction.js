@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 import {
@@ -38,21 +39,29 @@ export const useCreateTransactionForm = ({ onSuccess, onError }) => {
   return { form, handleSubmit }
 }
 
+// define os valores padrão do formulário
+const getEditTransactionFormDefaultValues = (transaction) => ({
+  name: transaction.name,
+  amount: parseFloat(transaction.amount),
+  date: new Date(transaction.date),
+  type: transaction.type,
+})
+
 export const useEditTransactionForm = ({ transaction, onSuccess, onError }) => {
   const { mutateAsync: updateTransaction } = useEditTransaction()
 
   // validação do zod para o React Hook Form
   const form = useForm({
     resolver: zodResolver(editTransactionFormSchema),
-    defaultValues: {
-      id: transaction.id,
-      name: transaction.name,
-      amount: parseFloat(transaction.amount),
-      date: transaction.date,
-      type: transaction.type,
-    },
+    defaultValues: getEditTransactionFormDefaultValues(transaction),
     shouldUnregister: true,
   })
+
+  // passa o id para o formulário e reseta os dados do mesmo
+  useEffect(() => {
+    form.reset(getEditTransactionFormDefaultValues(transaction))
+    form.setValue('id', transaction.id)
+  }, [form, transaction])
 
   const handleSubmit = async (data) => {
     await updateTransaction(data)
