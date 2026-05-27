@@ -121,7 +121,6 @@ const EditTransactionButton = ({ transaction }) => {
                     <FormItem>
                       <FormControl>
                         <TransactionTypeSelect
-                          disabled={form.formState.isSubmitting}
                           value={field.value}
                           onChange={field.onChange}
                         />
@@ -130,7 +129,13 @@ const EditTransactionButton = ({ transaction }) => {
                     </FormItem>
                   )}
                 />
-                <DeleteTransactionButton />
+                <div className="flex justify-end">
+                  <DeleteTransactionButton
+                    transactionId={transaction.id}
+                    onSuccess={() => setSheetIsOpen(false)}
+                    isSubmitting={form.formState.isSubmitting}
+                  />
+                </div>
               </div>
               <div>
                 {/* Botões de salvar e cancelar */}
