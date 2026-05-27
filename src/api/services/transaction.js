@@ -49,4 +49,14 @@ export const TransactionService = {
     })
     return response.data
   },
+  /**
+   * Deleta uma transação do usuário
+   * @param {Object} input - Transação
+   * @param {string} input.id - id da transação
+   */
+  delete: async (input) => {
+    if (!input.id) throw new Error('Missing transaction ID')
+    const response = await protectedApi.delete(`/transactions/me/${input.id}`)
+    return response.data
+  },
 }
