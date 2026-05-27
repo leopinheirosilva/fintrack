@@ -28,7 +28,7 @@ export const DatePickerWithRange = ({
             id="date-picker-range"
             className={cn(
               'w-full justify-start text-left font-normal',
-              !value && 'text-muted-foregournd'
+              !value && 'text-muted-foreground'
             )}
           >
             <CalendarIcon />
