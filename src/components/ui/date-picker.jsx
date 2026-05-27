@@ -24,8 +24,7 @@ export const DatePicker = ({
           variant="outline"
           id="date-picker-simple"
           className={cn(
-            'w-full justify-start text-left font-normal',
-            !value && 'text-muted-foreground'
+            'w-full justify-start text-left font-normal text-muted-foreground'
           )}
         >
           {value ? (
