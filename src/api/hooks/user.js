@@ -51,3 +51,10 @@ export const useLogin = () => {
     },
   })
 }
+
+export const useDeleteUser = () => {
+  return useMutation({
+    mutationKey: ['deleteduser'],
+    mutationFn: () => UserService.delete(),
+  })
+}

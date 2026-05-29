@@ -80,4 +80,18 @@ export const UserService = {
     )
     return response.data
   },
+  // JS Docs
+  /**
+   * Retorna o usuário autenticado
+   * @returns {Object} Usuário autenticado
+   */
+  delete: async () => {
+    const response = await protectedApi.delete('/users/me')
+    return {
+      id: response.data.id,
+      email: response.data.email,
+      firstName: response.data.first_name,
+      lastName: response.data.last_name,
+    }
+  },
 }
