@@ -28,11 +28,12 @@ const SignupPage = () => {
   const { user, isInitializing } = useAuthContext()
   const { form, handleSubmit } = useSignupForm()
 
-  const checkboxIsTrue = () => {
+  const handleButtonClick = () => {
+    // verifica se a checkbox está selectionada
     if (form.formState.errors.terms) {
       return toast.error('Aceite os termos e condições para criar conta')
     }
-    handleSubmit()
+    form.handleSubmit(handleSubmit)()
   }
 
   if (isInitializing) return null
@@ -172,8 +173,9 @@ const SignupPage = () => {
             <CardFooter>
               {/* Criar conta */}
               <Button
+                type="button"
                 className="w-full"
-                onClick={checkboxIsTrue}
+                onClick={handleButtonClick}
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting && (
