@@ -3,6 +3,7 @@ import { ChevronDownIcon, LogOutIcon } from 'lucide-react'
 import logo from '@/assets/icons/logo.svg'
 import { useAuthContext } from '@/contexts/auth'
 
+import DeleteUserButton from './delete-user-button'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
@@ -55,6 +56,9 @@ const Header = () => {
                     <LogOutIcon />
                     Sair
                   </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <DeleteUserButton />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

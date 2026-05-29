@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useLogin, useSignup } from '@/api/hooks/user'
+import { useDeleteUser, useLogin, useSignup } from '@/api/hooks/user'
 import { UserService } from '@/api/services/user'
 import {
   LOCAL_STORAGE_ACCESS_TOKEN_KEY,
@@ -15,6 +15,7 @@ export const AuthContext = createContext({
   login: () => {},
   signup: () => {},
   logout: () => {},
+  deleteUser: () => {},
 })
 
 // hook personalizado para importar o contexto
@@ -69,6 +70,20 @@ export const AuthContextProvider = ({ children }) => {
     removeTokens()
   }
 
+  // mutation para deletar o usuário
+  const deleteUserMutation = useDeleteUser()
+  const deleteUser = async () => {
+    try {
+      await deleteUserMutation.mutateAsync()
+      setUser(null)
+      removeTokens
+      toast.success('Usuário removido com sucesso')
+    } catch (error) {
+      console.error(error)
+      toast.error('Erro ao remover usuário')
+    }
+  }
+
   // persiste o usuário
   useEffect(() => {
     const init = async () => {
@@ -100,6 +115,7 @@ export const AuthContextProvider = ({ children }) => {
         login,
         signup,
         logout,
+        deleteUser,
         isInitializing,
       }}
     >
