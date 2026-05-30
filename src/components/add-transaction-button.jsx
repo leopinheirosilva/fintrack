@@ -1,6 +1,5 @@
 import { Loader2Icon, PlusIcon } from 'lucide-react'
 import { useState } from 'react'
-import { NumericFormat } from 'react-number-format'
 import { toast } from 'sonner'
 
 import {
@@ -19,6 +18,7 @@ import TransactionTypeSelect from './transaction-type-select'
 import { Button } from './ui/button'
 import { DatePicker } from './ui/date-picker'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
+import { ForwardedNumericFormat } from './ui/forwarded-numeric-format'
 import { Input } from './ui/input'
 
 const AddTransactionButton = () => {
@@ -78,14 +78,9 @@ const AddTransactionButton = () => {
                   <FormItem>
                     <label>Valor</label>
                     <FormControl>
-                      <NumericFormat
+                      <ForwardedNumericFormat
                         disabled={form.formState.isSubmitting}
                         placeholder="Digite o valor da transação"
-                        thousandSeparator="."
-                        decimalSeparator=","
-                        prefix="R$"
-                        allowNegative={false}
-                        customInput={Input}
                         {...field}
                         onChange={() => {}}
                         onValueChange={(values) =>
