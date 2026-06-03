@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/table'
 
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState([{ id: 'date', desc: true }])
   const table = useReactTable({
     data,
     columns,
@@ -30,7 +30,7 @@ export function DataTable({ columns, data }) {
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className="bg-muted/65">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
