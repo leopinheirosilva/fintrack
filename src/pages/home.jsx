@@ -4,6 +4,7 @@ import AddTransactionButton from '@/components/add-transaction-button'
 import Balance from '@/components/balance'
 import DateSelection from '@/components/date-selection'
 import Header from '@/components/header'
+import TransactionTypeChart from '@/components/transaction-type-chart'
 import TransactionsTable from '@/components/transactions-table'
 import { useAuthContext } from '@/contexts/auth'
 
@@ -30,8 +31,9 @@ const HomePage = () => {
           </div>
         </div>
         {/* balanço e gráfico */}
-        <div className="grid grid-cols-[2fr,1fr]">
+        <div className="grid grid-cols-[2fr,1fr] gap-6">
           <Balance />
+          <TransactionTypeChart />
         </div>
         <TransactionsTable />
       </div>
