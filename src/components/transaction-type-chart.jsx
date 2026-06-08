@@ -16,7 +16,7 @@ import TransactionTypeIcon from './transaction-type-icon'
 
 const chartConfig = {
   expenses: {
-    label: 'Gastos',
+    label: 'Despesas',
     color: 'hsl(var(--primary-red))',
   },
   earnings: {
@@ -97,7 +97,7 @@ const TransactionTypeChart = () => {
                 icon={
                   <TrendingDownIcon className="text-primary-red" size={16} />
                 }
-                label="Gastos"
+                label="Despesas"
               />
             }
             value={`${data?.expensesPercentage}%`}

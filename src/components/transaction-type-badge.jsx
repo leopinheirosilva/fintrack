@@ -19,7 +19,7 @@ const getText = (variant) => {
     case 'EARNING':
       return 'Ganho'
     case 'EXPENSE':
-      return 'Despesa'
+      return 'Gasto'
     case 'INVESTMENT':
       return 'Investimento'
     default:
