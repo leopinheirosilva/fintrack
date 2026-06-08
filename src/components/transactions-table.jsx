@@ -4,27 +4,35 @@ import { useSearchParams } from 'react-router'
 
 import { useGetTransactions } from '@/api/hooks/transaction'
 import { formatCurrency } from '@/helpers/currency'
+import { getTransactionDate } from '@/helpers/date'
 
 import EditTransactionButton from './edit-transaction-button'
 import TransactionTypeBadge from './transaction-type-badge'
 import { DataTable } from './ui/data-table'
 import { ScrollArea } from './ui/scroll-area'
+import SortableColumnHeader from './ui/sortable-column-header'
 
 const columns = [
   {
     accessorKey: 'name',
-    header: 'Título',
+    header: ({ column }) => {
+      return <SortableColumnHeader column={column}>Título</SortableColumnHeader>
+    },
   },
   {
     accessorKey: 'type',
-    header: 'Tipo',
+    header: ({ column }) => {
+      return <SortableColumnHeader column={column}>Tipo</SortableColumnHeader>
+    },
     cell: ({ row: { original: transaction } }) => {
       return <TransactionTypeBadge variant={transaction.type} />
     },
   },
   {
     accessorKey: 'amount',
-    header: 'Valor',
+    header: ({ column }) => {
+      return <SortableColumnHeader column={column}>Valor</SortableColumnHeader>
+    },
     // formata o valor em reais
     cell: ({ row: { original: transaction } }) => {
       return formatCurrency(transaction.amount)
@@ -32,12 +40,14 @@ const columns = [
   },
   {
     accessorKey: 'date',
-    header: 'Data',
-    // formata a data usando o date-fns
+    header: ({ column }) => {
+      return <SortableColumnHeader column={column}>Data</SortableColumnHeader>
+    },
+    // formata a data em string
     cell: ({ row: { original: transaction } }) => {
       return (
         <span className="text-muted-foreground">
-          {format(new Date(transaction.date), "dd 'de' MMMM 'de' yyyy", {
+          {format(getTransactionDate(transaction), "dd 'de' MMMM 'de' yyyy", {
             locale: ptBR,
           })}
         </span>
