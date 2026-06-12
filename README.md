@@ -83,8 +83,6 @@ src/
 
 - Vercel
 
-clique [aqui]((https://fintrack-puce-nine.vercel.app/)) para acessar a aplicação!
-
 ## Contato
 
 Email: <leonardopinheirosilva16@gmail.com>
