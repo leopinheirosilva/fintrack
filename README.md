@@ -64,12 +64,6 @@ VITE_API_BASE_URL=http://localhost:3000/api
 npm run dev
 ```
 
-- Para compilar para produção:
-
-```bash
-npm run build
-```
-
 ## Estrutura do Projeto
 
 ```
@@ -87,11 +81,9 @@ src/
 
 ## Deploy
 
-A aplicação pode ser deployada em plataformas como:
-
 - Vercel
-- Netlify
-- GitHub Pages
+
+clique [aqui]((https://fintrack-puce-nine.vercel.app/)) para acessar a aplicação!
 
 ## Contato
 
