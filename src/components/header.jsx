@@ -31,7 +31,7 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="space-x-1 py-6">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://avatars.githubusercontent.com/u/124599?v=4"></AvatarImage>
+                    <AvatarImage src="/"></AvatarImage>
                     <AvatarFallback>
                       {user.firstName[0]}
                       {user.lastName[0]}
